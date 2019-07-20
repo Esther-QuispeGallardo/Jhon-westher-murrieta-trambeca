@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="./TemplateVeterinaria.xhtml">
+
+            <ui:define name="content">
+                <p:growl id="msj" autoUpdate="true"/>
+                <h:form id="from">
+                    <p:panel>
+                        <f:facet name="header">
+                            <column>
+                                <p:outputLabel value="MANTENIMIENTO MASCOTA"/>  
+                            </column>
+                        </f:facet>
+                        <h:panelGrid columns="3">
+                            <p:outputLabel value="Clientes"/>
+                            <p:selectOneMenu value="#{mascotaPorClienteBean.idCliente}">
+                                <f:selectItem itemLabel="-- Seleccione Cliente --"/>
+                                <f:selectItems value="#{mascotaPorClienteBean.listaCliente}" var="cliente" itemLabel="#{cliente.nombre}" itemValue="#{cliente.idCliente}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid columns="3">
+                            <p:outputLabel value="Mascota"/>
+                            <p:selectOneMenu value="#{mascotaPorClienteBean.idMascota}">
+                                <f:selectItem itemLabel="-- Seleccione Mascota --"/>
+                                <f:selectItems value="#{mascotaPorClienteBean.listaMascota}" var="mascota" itemLabel="#{mascota.nombreMascota}" itemValue="#{mascota.idMascota}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        
+                         <h:panelGrid columns="3">
+                            <p:outputLabel value="Estado"/>
+                            <p:selectOneMenu value="#{mascotaPorClienteBean.mascotaporcliente.estado}">
+                                <f:selectItem itemLabel="-- Seleccione Estado --"/>
+                                <f:selectItem itemLabel=" Activo" itemValue="A"/>
+                                 <f:selectItem itemLabel=" Inactivo" itemValue="I"/>
+                                 
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        
+                        <p:commandButton value="Nuevo" action="#{mascotaBean.limpiar()}" update=":data:datatable,:from"/>
+                        <p:commandButton rendered="#{!mascotaPorClienteBean.banderaSelect}" value="Guardar" action="#{mascotaPorClienteBean.guardarMascotaporCliente()}" update=":data:datatable,:from"/>                        
+                        <p:commandButton rendered="#{mascotaPorClienteBean.banderaSelect}" value="Actualizar" action="#{mascotaPorClienteBean.actualizarMascotaporcliente()}" update=":data:datatable,:from"/>
+                    </p:panel>
+                </h:form>
+                <p:panel>
+                    <h:form id="data">
+                        <p:dataTable rowKey="#{mascotaporcliente.id.clienteIdCliente}" selection="#{mascotaPorClienteBean.mascotaporcliente}" selectionMode="single" 
+                                     id="datatable" var="mascotaporcliente" value="#{mascotaPorClienteBean.listarMascotaporcliente()}">
+                            <p:ajax update=":from" event="rowSelect" listener="#{mascotaPorClienteBean.selectBandera()}"/>
+                            <p:column headerText="Mascota">
+                                <h:outputText value="#{mascotaporcliente.cliente.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Cliente">
+                                <h:outputText value="#{mascotaporcliente.mascota.nombreMascota}"/>
+                            </p:column>
+                            
+                            <p:column headerText="Estado">
+                                <h:outputText value="#{mascotaporcliente.estado}"/>
+                            </p:column>
+                          
+                            <p:column headerText="Accion">
+                                <p:commandButton value="Eliminar" onclick="PF('dgEliminar').show();">
+                                    <f:setPropertyActionListener target="#{mascotaPorClienteBean.mascotaporcliente}" value="#{mascotaporcliente}" />
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>
+                </p:panel>
+                <p:dialog id="dig" header="Eliminar registro" widgetVar="dgEliminar" showEffect="explode" hideEffect="explode" modal="true">
+                    <h:form id="fromEliminar" style="text-align:center;">
+                        <p:commandButton value="Si" action="#{mascotaPorClienteBean.eliminar()}" update=":data:datatable" oncomplete="PF('dgEliminar').hide();"/>
+                        <p:commandButton value="No" onclick="PF('dgEliminar').hide();" />
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>
+

@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Facelet Title</title>
+      
+       
+    </h:head>
+    <h:body>
+          <ui:composition template="./TemplateVeterinaria.xhtml">
+            <ui:define name="content">
+        <p:growl  id="msj" autoUpdate="true"/>
+        <div align="center">
+            <h:form id="form">
+                <p:panel style="width: 40%">
+                   
+                        <f:facet name="header">
+                            <p:column>
+                                <p:outputLabel value="REGISTRAR CLIENTE" />
+                            </p:column>
+                            
+                        </f:facet>
+                     <p:panelGrid >
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="ID"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputText value="#{ClienteBean.cliente.idCliente}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Nombre"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputText value="#{ClienteBean.cliente.nombre}"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Apellido"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputText value="#{ClienteBean.cliente.apellido}" />
+
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="FECHA DE NACIMIENTO"/>
+
+                            </p:column>
+                            <p:column>
+                                <p:calendar value="#{ClienteBean.cliente.fechaNacimiento}"  locale="es" effect="explode"/>
+                            </p:column>
+                        </p:row>
+                             <p:row>
+                            <p:column>
+                                <p:outputLabel value="TELEFONO"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputText value="#{ClienteBean.cliente.telefono}"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="DIRECION"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputText value="#{ClienteBean.cliente.direccion}"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="EMAIL"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputText value="#{ClienteBean.cliente.email}"/>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:commandButton value="Enviar" action="#{ClienteBean.guardarCliente()}" update=":formdata,:form"/>
+                    <p:commandButton value="Actualizar" action="#{ClienteBean.actualizarCliente()}" update=":formdata:datatable,:form"/>
+                   <p:commandButton value="Nuevo" action="#{ClienteBean.limpiar()}" update=":form"/>-
+                </p:panel>
+            </h:form>
+              <h:form id="formdata">
+                  <p:dataTable  rowKey="#{cliente.idCliente}" selection="#{ClienteBean.cliente}"  selectionMode="single" id="datatable" style="width: 60%" var="cliente" value="#{ClienteBean.listar()}">
+                    <p:ajax event="rowSelect" update=":form"/>
+                    <p:column headerText="ID:">
+
+                        <p:outputLabel value="#{cliente.idCliente}"/>
+                    </p:column>
+                    <p:column headerText="Nombre de Cliente">
+                        <h:outputText value="#{cliente.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Apellido">
+                        <p:outputLabel value="#{cliente.apellido}"/>
+                    </p:column>
+                    <p:column headerText="Fecha de Nacimiento">
+                        <p:outputLabel value="#{cliente.fechaNacimiento}"/>
+                    </p:column>
+                    <p:column headerText="Telefono">
+                        <p:outputLabel value="#{cliente.telefono}"/>
+                    </p:column>
+                    <p:column headerText="Direcion">
+                        <p:outputLabel value="#{cliente.direccion}"/>
+                    </p:column>
+                    <p:column headerText="Correo">
+                        <p:outputLabel value="#{cliente.email}"/>
+                    </p:column>
+                   <p:column headerText="action">
+                        <p:commandButton value="ELIMINAR"  onclick="PF('dlgEliminar').show();" update=":formEliminar" >
+                                     <f:setPropertyActionListener  target="#{clienteBean.cliente}" value="#{cliente}"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>
+              <p:dialog id="dlg" header="Eliminar datos" widgetVar="dlgEliminar"  showEffect="explode" hideEffect="explode" modal="true">
+
+            <h:form id="formEliminar" style="text-align: center">
+                <h:outputText value="deseas eliminar"  />
+                <p:commandButton value="si" actionListener="#{ClienteBean.eliminarCliente()}" update=":formdata:datatable" oncomplete="PF('dlgEliminar').hide();"/>
+                <p:commandButton value="no" onclick="PF('dlgEliminar').hide();"/>
+            </h:form>
+
+        </p:dialog>
+        </div>
+       
+        </ui:define>
+
+        </ui:composition>
+       
+    </h:body>
+</html>
+
